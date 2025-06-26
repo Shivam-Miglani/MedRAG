@@ -4,6 +4,11 @@ A smart medical research assistant that compares US and Dutch diabetes treatment
 ## What This Does
 This app helps medical researchers quickly find and compare treatment guidelines from different countries. It uses two different AI search methods to give you better answers about medical questions.
 
+## 🚀 **[Try the Live Demo](https://med-rag1.streamlit.app/)**
+*Click above to explore the interactive application - no setup required!*
+![Medical RAG System Interface](screenshots/main-interface.png)
+
+
 ## Key Features
 🚀 Two Search Methods
 - **Fast Vector Search**: Quick similarity matching (like Google search)

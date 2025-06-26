@@ -291,23 +291,60 @@ class MedicalRAGSystem:
         cat1 = self._get_concept_category(concept1)
         cat2 = self._get_concept_category(concept2)
         
+        # More specific relationship mapping to reduce generic "associated_with"
         relation_map = {
             ('treatments', 'conditions'): 'treats',
             ('conditions', 'treatments'): 'treated_by',
             ('guidelines', 'treatments'): 'recommends',
             ('guidelines', 'interventions'): 'recommends',
+            ('guidelines', 'conditions'): 'addresses',
             ('metrics', 'conditions'): 'measures',
-            ('interventions', 'outcomes'): 'leads_to'
+            ('metrics', 'treatments'): 'evaluates',
+            ('interventions', 'outcomes'): 'leads_to',
+            ('interventions', 'conditions'): 'targets',
+            ('treatments', 'outcomes'): 'improves',
+            ('conditions', 'outcomes'): 'affects'
         }
         
-        return relation_map.get((cat1, cat2), 'related_to' if cat1 == cat2 else 'associated_with')
-    
+        # Check both directions
+        direct_relation = relation_map.get((cat1, cat2))
+        if direct_relation:
+            return direct_relation
+        
+        reverse_relation = relation_map.get((cat2, cat1))
+        if reverse_relation:
+            return reverse_relation
+        
+        # Same category relationships
+        if cat1 == cat2:
+            return 'related_to'
+        
+        # Only use associated_with as last resort
+        return 'associated_with'
+
+
     def create_interactive_graph(self, graph: nx.Graph) -> str:
-        """Generate interactive PyVis knowledge graph"""
+        """Generate interactive PyVis knowledge graph with spring layout"""
         if not graph.nodes():
             return "<div style='color: white; padding: 20px;'>No knowledge graph data available</div>"
         
         try:
+            # Filter graph to reduce clutter - only keep high-weight edges
+            filtered_graph = nx.Graph()
+            
+            # Add all nodes
+            for node, data in graph.nodes(data=True):
+                filtered_graph.add_node(node, **data)
+            
+            # Only add edges with weight >= 2 to reduce clutter
+            for source, target, edge_data in graph.edges(data=True):
+                weight = edge_data.get('weight', 1)
+                if weight >= 3:  # Filter out weak connections
+                    filtered_graph.add_edge(source, target, **edge_data)
+            
+            # Use NetworkX spring layout for better positioning
+            pos = nx.spring_layout(filtered_graph, k=3, iterations=50, seed=42)
+            
             net = Network(
                 height="600px", 
                 width="100%", 
@@ -327,8 +364,8 @@ class MedicalRAGSystem:
                 'general': '#7F7F7F'
             }
             
-            # Add nodes with enhanced styling
-            for node_id, node_data in graph.nodes(data=True):
+            # Add nodes with spring layout positions
+            for node_id, node_data in filtered_graph.nodes(data=True):
                 category = node_data.get('category', 'general')
                 frequency = node_data.get('frequency', 1)
                 
@@ -343,53 +380,86 @@ class MedicalRAGSystem:
                 else:
                     color = color_palette.get(category, '#7F7F7F')
                 
-                node_size = min(40, 15 + frequency * 3)
+                node_size = min(30, 12 + frequency * 2)  # Smaller nodes
+                
+                # Use spring layout positions
+                x, y = pos[node_id]
+                x_scaled, y_scaled = x * 400, y * 400  # Scale for PyVis
                 
                 net.add_node(
                     node_id,
                     label=node_id.replace('_', ' ').title(),
                     color=color,
                     size=node_size,
+                    x=x_scaled,
+                    y=y_scaled,
                     title=f"<b>{node_id.title()}</b><br/>Category: {category}<br/>Frequency: {frequency}",
-                    font={'size': 12, 'color': 'white'}
+                    font={'size': 9, 'color': 'white'}
                 )
             
-            # Add edges with relationship-based styling
+            # Add edges with updated abbreviations and colors
             edge_colors = {
                 'treats': '#E74C3C',
-                'recommends': '#3498DB', 
+                'treated_by': '#E74C3C',
+                'recommends': '#3498DB',
+                'addresses': '#3498DB',
                 'measures': '#9B59B6',
+                'evaluates': '#9B59B6',
                 'leads_to': '#2ECC71',
+                'targets': '#2ECC71',
+                'improves': '#2ECC71',
+                'affects': '#F39C12',
                 'related_to': '#F39C12',
                 'associated_with': '#BDC3C7'
             }
-            
-            for source, target, edge_data in graph.edges(data=True):
+
+            relation_abbreviations = {
+                'treats': 'TR',
+                'treated_by': 'TB',
+                'recommends': 'RC',
+                'addresses': 'AD',
+                'measures': 'MS',
+                'evaluates': 'EV',
+                'leads_to': 'LT',
+                'targets': 'TG',
+                'improves': 'IM',
+                'affects': 'AF',
+                'related_to': 'RT',
+                'associated_with': 'AW'
+            }
+                        
+            for source, target, edge_data in filtered_graph.edges(data=True):
                 weight = edge_data.get('weight', 1)
                 relation_type = edge_data.get('relation_type', 'related_to')
                 
-                edge_width = min(5, 1 + weight)
+                edge_width = min(4, 1 + weight * 0.5)  # Thinner edges
                 edge_color = edge_colors.get(relation_type, '#BDC3C7')
+                
+                # Use abbreviation for label and fix tooltip HTML
+                relation_abbrev = relation_abbreviations.get(relation_type, 'AW')
+                tooltip_text = f"{relation_type.replace('_', ' ').title()}\nStrength: {weight}"
                 
                 net.add_edge(
                     source, target,
                     width=edge_width,
                     color=edge_color,
-                    title=f"{relation_type.replace('_', ' ').title()}<br/>Strength: {weight}"
+                    label=relation_abbrev,
+                    title=tooltip_text,
+                    font={'size': 7, 'color': 'red'}  # Smaller font
                 )
             
-            # Configure physics for optimal layout
+            # Optimized physics settings for cleaner layout
             net.set_options("""
             var options = {
                 "physics": {
                     "enabled": true,
-                    "stabilization": {"iterations": 200},
+                    "stabilization": {"iterations": 100},
                     "barnesHut": {
-                        "gravitationalConstant": -8000,
-                        "centralGravity": 0.3,
-                        "springLength": 95,
-                        "springConstant": 0.04,
-                        "damping": 0.09
+                        "gravitationalConstant": -2000,
+                        "centralGravity": 0.1,
+                        "springLength": 120,
+                        "springConstant": 0.02,
+                        "damping": 0.15
                     }
                 },
                 "interaction": {
@@ -397,6 +467,12 @@ class MedicalRAGSystem:
                     "tooltipDelay": 200,
                     "zoomView": true,
                     "dragView": true
+                },
+                "edges": {
+                    "smooth": {
+                        "enabled": true,
+                        "type": "continuous"
+                    }
                 }
             }
             """)
@@ -416,7 +492,7 @@ class MedicalRAGSystem:
             
         except Exception as e:
             return f"<div style='color: white; padding: 20px;'>Graph visualization error: {str(e)}</div>"
-
+        
 def render_metrics_dashboard(metrics: Dict[str, float]):
     """Render clinical quality metrics with enhanced styling"""
     col1, col2, col3, col4 = st.columns(4)
@@ -763,21 +839,37 @@ def render_rag_comparison_page(rag_system, documents):
         st.markdown("**Quality Metrics:**")
         render_metrics_dashboard(rerank_data['metrics'])
         
+        # ADD THIS SECTION - Evidence sources for Knowledge Graph
+        if rerank_data['source_nodes']:
+            with st.expander("📚 Evidence Sources", expanded=False):
+                query_terms = selected_query.split()
+                for i, node_data in enumerate(rerank_data['source_nodes'], 1):
+                    source_name = node_data['metadata'].get("file_name", f"Source {i}").replace("./data/", "")
+                    relevance = node_data.get('score', 0.0)
+                    
+                    st.markdown(f"**{i}. {source_name}** (relevance: {relevance:.3f})")
+                    
+                    # Extract snippet from content
+                    content = node_data.get('content', '')
+                    sentences = [s.strip() for s in content.split('.') if s.strip()]
+                    snippet = sentences[0][:200] + '...' if sentences else content[:200] + '...'
+                    st.info(snippet)
+        
         # Interactive Knowledge Graph
         st.markdown("**Medical Knowledge Graph:**")
         
-        # Graph legend
-        st.markdown("""
-        **Legend:** 🔴 Conditions | 🟢 Treatments | 🔵 Guidelines | 🟣 Metrics | 🟡 Interventions | 🟠 Outcomes
-        """)
-        
+        # Graph legend - UPDATE THIS SECTION
+        st.markdown("**Legend:**")
+        st.markdown("🔴 Conditions | 🟢 Treatments | 🔵 Guidelines | 🟣 Metrics | 🟡 Interventions | 🟠 Outcomes")
+        st.markdown("**Relationships:** TR=treats | TB=treated_by | RC=recommends | AD=addresses | MS=measures | EV=evaluates | LT=leads_to | TG=targets | IM=improves | AF=affects | RT=related_to | AW=associated_with")
+    
         # Build and render knowledge graph
         with st.spinner("Building knowledge graph..."):
             knowledge_graph = rag_system.build_medical_knowledge_graph(documents)
         
         graph_html = rag_system.create_interactive_graph(knowledge_graph)
         components.html(graph_html, height=600)
-        
+    
         # Graph statistics
         if knowledge_graph.nodes():
             st.markdown(f"**Graph Stats:** {len(knowledge_graph.nodes())} concepts, {len(knowledge_graph.edges())} relationships")
