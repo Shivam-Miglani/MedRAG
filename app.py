@@ -1,3 +1,4 @@
+import pandas as pd
 import os, requests, streamlit as st
 from dotenv import load_dotenv
 import re
@@ -651,8 +652,9 @@ def render_performance_comparison(rag_system, vector_metrics, rerank_metrics, ve
             "Vector" if vector_avg > kg_avg else "KG"
         ]
     }
-    
-    st.table(comparison_data)
+    # FIX: Convert the dictionary to a DataFrame and then convert all columns to string type
+    df_comparison = pd.DataFrame(comparison_data)
+    st.table(df_comparison.astype(str)) # This ensures all data is string, preventing the pyarrow error
 
 def render_document_database(documents):
     """Render the source documents database page"""
