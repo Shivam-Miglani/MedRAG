@@ -795,8 +795,12 @@ def main():
     st.set_page_config(
         page_title=CONFIG['page_title'],
         page_icon=CONFIG['page_icon'],
-        layout=CONFIG['layout']
+        layout=CONFIG['layout'],
+        initial_sidebar_state="expanded"
     )
+
+    # Force sidebar to be expanded by default
+    st.session_state.sidebar_state = 'expanded'
     
     # Initialize RAG system
     rag_system = MedicalRAGSystem()
