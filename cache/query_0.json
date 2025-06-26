@@ -1,0 +1,124 @@
+{
+  "vector": {
+    "response": "US and Dutch approaches to Type 2 diabetes management share a focus on lifestyle interventions. Both emphasize achieving a modest weight loss, with the US aiming for 5-7% and the Netherlands targeting 5-15%. The US utilizes the ‘plate method’ for portion control, prioritizing lean proteins and non-starchy vegetables. The Netherlands employs the ‘Schijf van Vijf’ (Wheel of Five), often incorporating a carbohydrate-restricted diet. Both promote regular physical activity, with the US recommending 150 minutes of moderate activity weekly and the Netherlands advising a combination of endurance training and strength exercises. In terms of medication, Metformin is considered the standard first-line treatment in both countries.",
+    "source_nodes": [
+      {
+        "metadata": {
+          "file_path": "/Users/shivam/Desktop/MedRAG/data/cdc_diabetes.txt",
+          "file_name": "cdc_diabetes.txt",
+          "file_type": "text/plain",
+          "file_size": 2515,
+          "creation_date": "2025-06-26",
+          "last_modified_date": "2025-06-26"
+        },
+        "score": 0.809875759491361,
+        "content": "Title: US CDC Guidelines: Comprehensive Diabetes Management and Prevention - Key Insights\n\nThe primary strategy for preventing Type 2 diabetes in the United States involves the National Diabetes Prevention Program (National DPP), a structured, yearlong lifestyle intervention. This program, facilitated by trained coaches, has demonstrated a significant reduction in disease risk for high-risk individuals, often achieving 5-7% body weight loss and at least 150 minutes of moderate physical activity, like brisk walking, each week. Furthermore, recent studies funded by NIH suggest that early identification of genetic predispositions might enhance prevention strategies, though these are not yet integrated into mainstream public health programs. The CDC also issues annual health advisories regarding seasonal flu vaccinations.\n\nFor individuals already diagnosed, Diabetes Self-Management Education and Support (DSMES) services are critical. These services help patients develop skills for managing blood sugar, reducing the risk of complications such as neuropathy or kidney disease, and coping with the emotional aspects of the disease. Effective management typically targets A1C levels below 7% for most non-pregnant adults. The CDC's dietary guidance promotes the 'plate method' for portion control, focusing on lean proteins and non-starchy vegetables, rather than prescribing a single, rigid diet. There's also an emphasis on adequate hydration and public awareness campaigns about the importance of handwashing.\n\nMetformin is the standard first-line pharmacological treatment. However, newer agents like SGLT2 inhibitors and GLP-1 receptor agonists are increasingly considered for patients with established cardiovascular disease or chronic kidney disease, based on recent clinical trial evidence from the American Diabetes Association (ADA). The interdisciplinary healthcare team, comprising primary care physicians, endocrinologists, and registered dietitians, collaborates to create personalized management plans. There's also an ongoing federal initiative to improve health equity in diabetes care among underserved populations through telemedicine, though this primarily impacts access, not core treatment guidelines.\n\nThe CDC's prevention strategies also encompass regular health screenings and community-based interventions, like promoting access to healthy food options in food deserts. Global health security remains a top priority, with efforts to monitor emerging infectious diseases worldwide."
+      },
+      {
+        "metadata": {
+          "file_path": "/Users/shivam/Desktop/MedRAG/data/source_1_cdc.txt",
+          "file_name": "source_1_cdc.txt",
+          "file_type": "text/plain",
+          "file_size": 734,
+          "creation_date": "2025-06-26",
+          "last_modified_date": "2025-06-26"
+        },
+        "score": 0.806579437601893,
+        "content": "Title: US CDC Comprehensive Framework for Type 2 Diabetes Management\n\nThe cornerstone of Type 2 diabetes prevention in the United States involves the National Diabetes Prevention Program (National DPP), a structured, yearlong lifestyle intervention. This program, facilitated by trained coaches, has demonstrated a significant reduction in disease risk for high-risk individuals. Core goals include a modest weight loss of 5-7% of body weight and achieving at least 150 minutes of moderate physical activity, like brisk walking, each week. The CDC's dietary guidance promotes the 'plate method' for portion control, focusing on lean proteins and non-starchy vegetables. Metformin is the standard first-line pharmacological treatment."
+      },
+      {
+        "metadata": {
+          "file_path": "/Users/shivam/Desktop/MedRAG/data/source_2_rivm.txt",
+          "file_name": "source_2_rivm.txt",
+          "file_type": "text/plain",
+          "file_size": 674,
+          "creation_date": "2025-06-26",
+          "last_modified_date": "2025-06-26"
+        },
+        "score": 0.8053631687119495,
+        "content": "Titel: Nederlandse RIVM Richtlijnen voor Diabetes Type 2\n\nIn Nederland richt de behandeling van diabetes type 2 zich op praktische, in het dagelijks leven geïntegreerde leefstijlaanpassingen. Het hoofddoel is het bereiken van een duurzaam gezond gewicht, met een streefdoel van 5-15% gewichtsverlies. Het voedingsadvies is gebaseerd op de 'Schijf van Vijf' (Wheel of Five), vaak aangescherpt met een koolhydraatbeperkt dieet. De beweegrichtlijn adviseert een combinatie van duurtraining (minimaal 150 minuten per week) en tweemaal per week spierversterkende oefeningen. De behandeling met medicatie volgt een 'stap-voor-stap' protocol, waarbij Metformine de eerste keus is."
+      }
+    ],
+    "time": 7.530620098114014,
+    "tokens": 104,
+    "metrics": {
+      "source_diversity": 0.75,
+      "clinical_completeness": 1.0,
+      "cross_guideline_synthesis": 0.3333333333333333,
+      "evidence_strength": 0.8072727886017345
+    }
+  },
+  "rerank": {
+    "response": "Both the United States and the Netherlands prioritize lifestyle modifications as a cornerstone of Type 2 diabetes management. Both countries advocate for achieving a sustainable healthy weight, with a target weight loss of 5-15% in the Netherlands and 5-7% in the US. Dietary advice centers around a ‘plate method’ or ‘Schijf van Vijf’ (Wheel of Five) approach, emphasizing lean proteins and non-starchy vegetables in the US, and a ‘Schijf van Vijf’ with an emphasis on replacing fast sugars and ‘white’ grain products with whole grains, vegetables, and legumes in the Netherlands. Both countries recommend a combination of moderate physical activity (at least 150 minutes per week) and strength training.\n\nHowever, there are some differences in approach. The US utilizes a structured program like the National Diabetes Prevention Program with trained coaches, while Dutch care is often integrated within primary healthcare, frequently involving a general practitioner and practice nurse. The US emphasizes a multi-disciplinary team approach including primary care physicians, endocrinologists and registered dietitians, whereas the Dutch system relies heavily on the general practitioner and practice nurse as central figures. Pharmacological interventions are also approached differently; while Metformin is the first-line treatment in both countries, newer agents like SGLT2 inhibitors and GLP-1 receptor agonists are increasingly considered in the US, particularly for patients with cardiovascular disease or chronic kidney disease. In the Netherlands, Metformin is considered after lifestyle advice has been attempted. Finally, while both countries have government initiatives to promote healthy eating and physical activity, the US utilizes a more formalized program with dedicated coaches, whereas the Netherlands focuses on broader community-based programs and initiatives within primary care.",
+    "source_nodes": [
+      {
+        "metadata": {
+          "file_path": "/Users/shivam/Desktop/MedRAG/data/source_1_cdc.txt",
+          "file_name": "source_1_cdc.txt",
+          "file_type": "text/plain",
+          "file_size": 734,
+          "creation_date": "2025-06-26",
+          "last_modified_date": "2025-06-26"
+        },
+        "score": 0.7042357325553894,
+        "content": "Title: US CDC Comprehensive Framework for Type 2 Diabetes Management\n\nThe cornerstone of Type 2 diabetes prevention in the United States involves the National Diabetes Prevention Program (National DPP), a structured, yearlong lifestyle intervention. This program, facilitated by trained coaches, has demonstrated a significant reduction in disease risk for high-risk individuals. Core goals include a modest weight loss of 5-7% of body weight and achieving at least 150 minutes of moderate physical activity, like brisk walking, each week. The CDC's dietary guidance promotes the 'plate method' for portion control, focusing on lean proteins and non-starchy vegetables. Metformin is the standard first-line pharmacological treatment."
+      },
+      {
+        "metadata": {
+          "file_path": "/Users/shivam/Desktop/MedRAG/data/cdc_diabetes.txt",
+          "file_name": "cdc_diabetes.txt",
+          "file_type": "text/plain",
+          "file_size": 2515,
+          "creation_date": "2025-06-26",
+          "last_modified_date": "2025-06-26"
+        },
+        "score": 0.6913352012634277,
+        "content": "Title: US CDC Guidelines: Comprehensive Diabetes Management and Prevention - Key Insights\n\nThe primary strategy for preventing Type 2 diabetes in the United States involves the National Diabetes Prevention Program (National DPP), a structured, yearlong lifestyle intervention. This program, facilitated by trained coaches, has demonstrated a significant reduction in disease risk for high-risk individuals, often achieving 5-7% body weight loss and at least 150 minutes of moderate physical activity, like brisk walking, each week. Furthermore, recent studies funded by NIH suggest that early identification of genetic predispositions might enhance prevention strategies, though these are not yet integrated into mainstream public health programs. The CDC also issues annual health advisories regarding seasonal flu vaccinations.\n\nFor individuals already diagnosed, Diabetes Self-Management Education and Support (DSMES) services are critical. These services help patients develop skills for managing blood sugar, reducing the risk of complications such as neuropathy or kidney disease, and coping with the emotional aspects of the disease. Effective management typically targets A1C levels below 7% for most non-pregnant adults. The CDC's dietary guidance promotes the 'plate method' for portion control, focusing on lean proteins and non-starchy vegetables, rather than prescribing a single, rigid diet. There's also an emphasis on adequate hydration and public awareness campaigns about the importance of handwashing.\n\nMetformin is the standard first-line pharmacological treatment. However, newer agents like SGLT2 inhibitors and GLP-1 receptor agonists are increasingly considered for patients with established cardiovascular disease or chronic kidney disease, based on recent clinical trial evidence from the American Diabetes Association (ADA). The interdisciplinary healthcare team, comprising primary care physicians, endocrinologists, and registered dietitians, collaborates to create personalized management plans. There's also an ongoing federal initiative to improve health equity in diabetes care among underserved populations through telemedicine, though this primarily impacts access, not core treatment guidelines.\n\nThe CDC's prevention strategies also encompass regular health screenings and community-based interventions, like promoting access to healthy food options in food deserts. Global health security remains a top priority, with efforts to monitor emerging infectious diseases worldwide."
+      },
+      {
+        "metadata": {
+          "file_path": "/Users/shivam/Desktop/MedRAG/data/source_2_rivm.txt",
+          "file_name": "source_2_rivm.txt",
+          "file_type": "text/plain",
+          "file_size": 674,
+          "creation_date": "2025-06-26",
+          "last_modified_date": "2025-06-26"
+        },
+        "score": 0.6550120711326599,
+        "content": "Titel: Nederlandse RIVM Richtlijnen voor Diabetes Type 2\n\nIn Nederland richt de behandeling van diabetes type 2 zich op praktische, in het dagelijks leven geïntegreerde leefstijlaanpassingen. Het hoofddoel is het bereiken van een duurzaam gezond gewicht, met een streefdoel van 5-15% gewichtsverlies. Het voedingsadvies is gebaseerd op de 'Schijf van Vijf' (Wheel of Five), vaak aangescherpt met een koolhydraatbeperkt dieet. De beweegrichtlijn adviseert een combinatie van duurtraining (minimaal 150 minuten per week) en tweemaal per week spierversterkende oefeningen. De behandeling met medicatie volgt een 'stap-voor-stap' protocol, waarbij Metformine de eerste keus is."
+      },
+      {
+        "metadata": {
+          "file_path": "/Users/shivam/Desktop/MedRAG/data/rivm_diabetes.txt",
+          "file_name": "rivm_diabetes.txt",
+          "file_type": "text/plain",
+          "file_size": 2200,
+          "creation_date": "2025-06-26",
+          "last_modified_date": "2025-06-26"
+        },
+        "score": 0.6358891129493713,
+        "content": "Titel: Nederlandse RIVM Richtlijnen: Geïntegreerde Zorg voor Diabetes Type 2 en Volksgezondheid\n\nIn Nederland richt de behandeling van diabetes type 2 zich op praktische, in het dagelijks leven geïntegreerde leefstijlaanpassingen, vaak onder begeleiding van de huisarts en praktijkondersteuner (POH). Het hoofddoel is het bereiken van een duurzaam gezond gewicht, waarbij een gewichtsverlies van 5-15% aanzienlijke voordelen kan bieden, en het verbeteren van de insulinegevoeligheid. De Nederlandse gezondheidszorg, bekend om zijn sterke eerstelijnszorg, prioriteert preventieve maatregelen, waaronder nationale vaccinatieprogramma's voor kinderen.\n\nHet voedingsadvies is breed en gebaseerd op de 'Schijf van Vijf' (Wheel of Five), de algemene Nederlandse richtlijn voor gezonde voeding. Voor diabetespatiënten wordt dit vaak aangescherpt met een koolhydraatbeperkt dieet, waarbij de nadruk ligt op het vervangen van snelle suikers en 'witte' graanproducten door volkoren varianten, groenten, en peulvruchten. Echter, een recent overzicht van de Nederlandse Diabetes Federatie (NDF) suggereert dat rigide dieetrestricties minder effectief zijn dan flexibele, patiëntgerichte benaderingen. Regelmaat in maaltijden en het vermijden van overmatige alcoholconsumptie zijn essentieel. De RIVM publiceert ook jaarlijks rapporten over luchtkwaliteit in stedelijke gebieden.\n\nDe beweegrichtlijn adviseert een combinatie van duurtraining (minimaal 150 minuten per week matig intensief, zoals fietsen of wandelen) en tweemaal per week spierversterkende oefeningen. Dit draagt bij aan zowel gewichtsbeheersing als cardiovasculaire gezondheid. De behandeling met medicatie volgt een 'stap-voor-stap' protocol, waarbij Metformine de eerste keus is na leefstijladvies. Nieuwere medicijnen zoals SGLT2-remmers worden overwogen bij onvoldoende effect of specifieke complicaties. De huisarts en de POH vormen het hart van het zorgteam, met specialisten (internisten, diëtisten) in de tweede lijn voor complexe gevallen. Discussies over de integratie van eHealth-oplossingen in diabeteszorg zijn aan de gang. De kwaliteit van drinkwater in Nederland is ook van hoog niveau, wat bijdraagt aan algemene gezondheid."
+      },
+      {
+        "metadata": {
+          "file_path": "/Users/shivam/Desktop/MedRAG/data/source_4_noise_obesity_report.txt",
+          "file_name": "source_4_noise_obesity_report.txt",
+          "file_type": "text/plain",
+          "file_size": 671,
+          "creation_date": "2025-06-26",
+          "last_modified_date": "2025-06-26"
+        },
+        "score": 0.5097939968109131,
+        "content": "Title: Public Health Report on Obesity Trends in Western Europe\n\nRecent trends indicate a rising prevalence of obesity across Western Europe, which is a major public health concern. Government initiatives focus on promoting healthier food choices in schools and subsidizing sports club memberships. While pharmacological interventions for weight loss exist, they are typically considered only in cases of severe obesity and after lifestyle modifications have failed. The focus remains on prevention through education and community programs. Metformin is sometimes used off-label in certain patient populations for weight management, but this is not a standard guideline."
+      }
+    ],
+    "time": 13.347701072692871,
+    "tokens": 268,
+    "metrics": {
+      "source_diversity": 1.0,
+      "clinical_completeness": 1.0,
+      "cross_guideline_synthesis": 1.0,
+      "evidence_strength": 0.6392532229423523
+    }
+  }
+}

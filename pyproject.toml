@@ -1,0 +1,24 @@
+[project]
+name = "medrag"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "accelerate>=1.8.1",
+    "llama-index>=0.12.43",
+    "llama-index-embeddings-huggingface>=0.5.5",
+    "llama-index-llms-huggingface>=0.5.0",
+    "llama-index-llms-lmstudio>=0.3.0",
+    "llama-index-llms-openai>=0.4.7",
+    "llama-index-postprocessor-colbert-rerank>=0.3.0",
+    "matplotlib>=3.10.3",
+    "networkx>=3.5",
+    "python-dotenv>=1.1.1",
+    "pyvis>=0.3.2",
+    "ragas>=0.2.15",
+    "requests>=2.32.4",
+    "sentence-transformers>=4.1.0",
+    "streamlit>=1.46.0",
+    "torch>=2.6.0",
+]
