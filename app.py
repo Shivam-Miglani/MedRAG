@@ -321,6 +321,26 @@ class MedicalRAGSystem:
         
         # Only use associated_with as last resort
         return 'associated_with'
+    
+
+    def _calculate_node_importance(self, graph: nx.Graph, node: str) -> float:
+        """Calculate node importance based on centrality measures"""
+        try:
+            # Calculate different centrality measures
+            degree_centrality = nx.degree_centrality(graph).get(node, 0.0)
+            
+            # Only calculate betweenness if graph has enough nodes
+            if len(graph.nodes()) > 2:
+                betweenness_centrality = nx.betweenness_centrality(graph).get(node, 0.0)
+            else:
+                betweenness_centrality = 0.0
+            
+            # Combine measures for overall importance
+            importance = (degree_centrality + betweenness_centrality) / 2
+            return importance
+        except:
+            return 0.0
+
 
 
     def create_interactive_graph(self, graph: nx.Graph) -> str:
@@ -339,11 +359,11 @@ class MedicalRAGSystem:
             # Only add edges with weight >= 2 to reduce clutter
             for source, target, edge_data in graph.edges(data=True):
                 weight = edge_data.get('weight', 1)
-                if weight >= 3:  # Filter out weak connections
+                if weight >= 2:  # Filter out weak connections
                     filtered_graph.add_edge(source, target, **edge_data)
             
             # Use NetworkX spring layout for better positioning
-            pos = nx.spring_layout(filtered_graph, k=3, iterations=50, seed=42)
+            pos = nx.spring_layout(filtered_graph, k=4, iterations=100, seed=42)
             
             net = Network(
                 height="600px", 
@@ -364,10 +384,16 @@ class MedicalRAGSystem:
                 'general': '#7F7F7F'
             }
             
-            # Add nodes with spring layout positions
+            # Calculate node importance for sizing
+            importance_scores = {}
+            for node in filtered_graph.nodes():
+                importance_scores[node] = self._calculate_node_importance(filtered_graph, node)
+            
+            # Add nodes with improved styling
             for node_id, node_data in filtered_graph.nodes(data=True):
                 category = node_data.get('category', 'general')
                 frequency = node_data.get('frequency', 1)
+                importance = importance_scores.get(node_id, 0.0)
                 
                 # Special handling for guideline sources
                 if category == 'guidelines':
@@ -380,24 +406,43 @@ class MedicalRAGSystem:
                 else:
                     color = color_palette.get(category, '#7F7F7F')
                 
-                node_size = min(30, 12 + frequency * 2)  # Smaller nodes
+                # Improved node sizing based on importance and frequency
+                node_size = min(50, 20 + frequency * 3 + importance * 25)
                 
-                # Use spring layout positions
+                # Use spring layout positions with better scaling
                 x, y = pos[node_id]
-                x_scaled, y_scaled = x * 400, y * 400  # Scale for PyVis
+                x_scaled, y_scaled = x * 600, y * 600  # Increased scale for better spacing
+                
+                # Clean up node labels - capitalize properly and handle acronyms
+                clean_label = node_id.replace('_', ' ')
+                # Keep acronyms uppercase
+                if clean_label.lower() in ['who', 'cdc', 'rivm', 'ada', 'easd']:
+                    display_label = clean_label.upper()
+                elif clean_label.lower() == 'hba1c':
+                    display_label = 'HbA1c'
+                elif clean_label.lower() == 'bmi':
+                    display_label = 'BMI'
+                else:
+                    display_label = clean_label.title()
+                
+                # Add border for high-importance nodes
+                border_width = 3 if importance > 0.3 else 1
+                border_color = '#FFFFFF' if importance > 0.3 else color
                 
                 net.add_node(
                     node_id,
-                    label=node_id.replace('_', ' ').title(),
+                    label=display_label,  # Use cleaned label
                     color=color,
                     size=node_size,
                     x=x_scaled,
                     y=y_scaled,
-                    title=f"<b>{node_id.title()}</b><br/>Category: {category}<br/>Frequency: {frequency}",
-                    font={'size': 9, 'color': 'white'}
+                    title=f"<b>{display_label}</b><br/>Category: {category}<br/>Frequency: {frequency}<br/>Importance: {importance:.2f}",
+                    font={'size': 14, 'color': 'white', 'face': 'arial'},  # Larger, clearer font
+                    borderWidth=border_width,
+                    borderColor=border_color
                 )
             
-            # Add edges with updated abbreviations and colors
+            # Add edges with improved visibility
             edge_colors = {
                 'treats': '#E74C3C',
                 'treated_by': '#E74C3C',
@@ -427,15 +472,16 @@ class MedicalRAGSystem:
                 'related_to': 'RT',
                 'associated_with': 'AW'
             }
-                        
+                            
             for source, target, edge_data in filtered_graph.edges(data=True):
                 weight = edge_data.get('weight', 1)
                 relation_type = edge_data.get('relation_type', 'related_to')
                 
-                edge_width = min(4, 1 + weight * 0.5)  # Thinner edges
+                # Make edges more visible but not overwhelming
+                edge_width = min(8, 3 + weight * 0.8)  # Thicker edges for better visibility
                 edge_color = edge_colors.get(relation_type, '#BDC3C7')
                 
-                # Use abbreviation for label and fix tooltip HTML
+                # Use abbreviation for label
                 relation_abbrev = relation_abbreviations.get(relation_type, 'AW')
                 tooltip_text = f"{relation_type.replace('_', ' ').title()}\nStrength: {weight}"
                 
@@ -445,21 +491,22 @@ class MedicalRAGSystem:
                     color=edge_color,
                     label=relation_abbrev,
                     title=tooltip_text,
-                    font={'size': 7, 'color': 'red'}  # Smaller font
+                    font={'size': 11, 'color': 'white', 'strokeWidth': 2, 'strokeColor': 'black'}  # Better contrast
                 )
             
-            # Optimized physics settings for cleaner layout
+            # Optimized physics settings for cleaner, more spread out layout
             net.set_options("""
             var options = {
                 "physics": {
                     "enabled": true,
-                    "stabilization": {"iterations": 100},
+                    "stabilization": {"iterations": 200},
                     "barnesHut": {
-                        "gravitationalConstant": -2000,
-                        "centralGravity": 0.1,
-                        "springLength": 120,
-                        "springConstant": 0.02,
-                        "damping": 0.15
+                        "gravitationalConstant": -4000,
+                        "centralGravity": 0.05,
+                        "springLength": 180,
+                        "springConstant": 0.01,
+                        "damping": 0.25,
+                        "avoidOverlap": 1
                     }
                 },
                 "interaction": {
@@ -471,8 +518,13 @@ class MedicalRAGSystem:
                 "edges": {
                     "smooth": {
                         "enabled": true,
-                        "type": "continuous"
+                        "type": "continuous",
+                        "roundness": 0.3
                     }
+                },
+                "nodes": {
+                    "borderWidth": 2,
+                    "borderWidthSelected": 4
                 }
             }
             """)
@@ -492,7 +544,9 @@ class MedicalRAGSystem:
             
         except Exception as e:
             return f"<div style='color: white; padding: 20px;'>Graph visualization error: {str(e)}</div>"
-        
+
+
+
 def render_metrics_dashboard(metrics: Dict[str, float]):
     """Render clinical quality metrics with enhanced styling"""
     col1, col2, col3, col4 = st.columns(4)
@@ -857,12 +911,23 @@ def render_rag_comparison_page(rag_system, documents):
         
         # Interactive Knowledge Graph
         st.markdown("**Medical Knowledge Graph:**")
-        
-        # Graph legend - UPDATE THIS SECTION
+
+        # Enhanced Graph legend
         st.markdown("**Legend:**")
-        st.markdown("🔴 Conditions | 🟢 Treatments | 🔵 Guidelines | 🟣 Metrics | 🟡 Interventions | 🟠 Outcomes")
-        st.markdown("**Relationships:** TR=treats | TB=treated_by | RC=recommends | AD=addresses | MS=measures | EV=evaluates | LT=leads_to | TG=targets | IM=improves | AF=affects | RT=related_to | AW=associated_with")
-    
+        col_legend1, col_legend2 = st.columns(2)
+
+        with col_legend1:
+            st.markdown("**Node Categories:**")
+            st.markdown("🔴 Conditions | 🟢 Treatments | 🔵 Guidelines")
+            st.markdown("🟣 Metrics | 🟡 Interventions | 🟠 Outcomes")
+
+        with col_legend2:
+            st.markdown("**Relationships:**")
+            st.markdown("TR=treats | TB=treated_by | RC=recommends | AD=addresses")
+            st.markdown("MS=measures | EV=evaluates | LT=leads_to | TG=targets")
+            st.markdown("IM=improves | AF=affects | RT=related_to | AW=associated_with")
+
+        st.markdown("*Node size indicates importance. White borders = high importance nodes.*")
         # Build and render knowledge graph
         with st.spinner("Building knowledge graph..."):
             knowledge_graph = rag_system.build_medical_knowledge_graph(documents)

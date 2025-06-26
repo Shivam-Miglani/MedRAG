@@ -6,7 +6,8 @@ This app helps medical researchers quickly find and compare treatment guidelines
 
 ## 🚀 **[Try the Live Demo](https://med-rag1.streamlit.app/)**
 *Click above to explore the interactive application - no setup required!*
-![Medical RAG System Interface](screenshots/main-interface.png)
+![Medical RAG System Interface](screenshots/main.png)
+![Medical RAG System Comparison between Vector Search and KG rerank](screenshots/metrics.png)
 
 
 ## Key Features
